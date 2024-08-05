@@ -1,7 +1,9 @@
 import React from "react";
 import { IoCloseCircle } from "react-icons/io5";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useAuthState } from "react-firebase-hooks/auth";
 import { useCartContext } from "../context/CartContext";
+import { auth } from "../services/firebaseConfig";
 
 type CartModalProps = {
   toggleCartModal: () => void;
@@ -9,10 +11,21 @@ type CartModalProps = {
 
 const CartModal: React.FC<CartModalProps> = ({ toggleCartModal }) => {
   const { cart, removeFromCart } = useCartContext();
+  const [user] = useAuthState(auth);
+  const navigate = useNavigate();
 
   const handleBackgroundClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
       toggleCartModal();
+    }
+  };
+
+  const handleCheckout = () => {
+    toggleCartModal();
+    if (user) {
+      navigate("/checkout");
+    } else {
+      navigate("/login");
     }
   };
 
@@ -32,7 +45,7 @@ const CartModal: React.FC<CartModalProps> = ({ toggleCartModal }) => {
         </div>
         <div className="h-[2px] my-7 bg-[#d9d9d9]"></div>
         {cart.map((item) => (
-          <div>
+          <div key={item.id}>
             <div className="w-full h-auto flex items-center">
               <div className="w-[108px] h-[105px] flex-shrink-0 flex items-center justify-center relative">
                 <img
@@ -83,9 +96,12 @@ const CartModal: React.FC<CartModalProps> = ({ toggleCartModal }) => {
           >
             <NavLink to="/cart">Cart</NavLink>
           </button>
-          <div className="text-center text-black text-xs font-normal font-poppins py-1.5 px-7 rounded-[50px] border border-black">
+          <button
+            className="text-center text-black text-xs font-normal font-poppins py-1.5 px-7 rounded-[50px] border border-black"
+            onClick={handleCheckout}
+          >
             Checkout
-          </div>
+          </button>
           <div className="text-center text-black text-xs font-normal font-poppins py-1.5 px-7 rounded-[50px] border border-black">
             Comparison
           </div>

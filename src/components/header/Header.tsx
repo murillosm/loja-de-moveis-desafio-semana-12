@@ -1,15 +1,17 @@
 import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import logo from "../../assets/logo.png";
-import vector from "../../assets/vector.svg";
+import vector from "../../assets/Vector.svg";
 import cart from "../../assets/cart.svg";
 import { HiMenu } from "react-icons/hi";
 import CartModal from "../CartModal";
-
+import { auth } from "../../services/firebaseConfig";
+import { signOut } from "firebase/auth";
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isCartModalOpen, setIsCartModalOpen] = useState(false);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
   const navigate = useNavigate();
 
   const linkStyle = "text-black text-base font-medium font-poppins";
@@ -19,7 +21,13 @@ const Header = () => {
   };
 
   const handleVectorClick = () => {
-    navigate("/login");
+    setIsPopupOpen(!isPopupOpen);
+  };
+
+  const handleLogout = () => {
+    signOut(auth).then(() => {
+      navigate("/login");
+    });
   };
 
   return (
@@ -78,6 +86,22 @@ const Header = () => {
         </div>
       </div>
       {isCartModalOpen && <CartModal toggleCartModal={toggleCartModal} />}
+      {isPopupOpen && (
+        <div className="absolute w-40 top-16 right-24 bg-white shadow-lg rounded-lg p-4 z-10">
+          <button
+            className="w-full h-12 bg-customColor-2 rounded-lg text-customColor-5 font-normal text-lg flex items-center justify-center gap-4 hover:opacity-80 mb-2"
+            onClick={() => navigate("/login")}
+          >
+            Login
+          </button>
+          <button
+            className="w-full h-12 bg-red-500 rounded-lg text-white font-normal text-lg flex items-center justify-center gap-4 hover:opacity-80"
+            onClick={handleLogout}
+          >
+            Logout
+          </button>
+        </div>
+      )}
     </header>
   );
 };
