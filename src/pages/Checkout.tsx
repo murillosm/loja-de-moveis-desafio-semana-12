@@ -1,13 +1,51 @@
-import React from "react";
+// src/pages/Checkout.js
+
+import React, { span, useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import PageHeader from "../components/nav/PageHeader";
 import Info from "../components/Info";
+import { useCartContext } from "../context/CartContext";
+
+const schema = z.object({
+  firstName: z.string().min(1, { message: "First name is required" }),
+  lastName: z.string().min(1, { message: "Last name is required" }),
+  companyName: z.string().optional(),
+  zipCode: z.string().min(1, { message: "ZIP code is required" }),
+  country: z.string().min(1, { message: "Country is required" }),
+  streetAddress: z.string().min(1, { message: "Street address is required" }),
+  city: z.string().min(1, { message: "City is required" }),
+  province: z.string().min(1, { message: "Province is required" }),
+  addonAddress: z.string().optional(),
+  email: z.string().email({ message: "Invalid email address" }),
+  additionalInfo: z.string().optional(),
+});
 
 const Checkout = () => {
+  const { cart, removeFromCart } = useCartContext();
+
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(schema),
+  });
+
+  const onSubmit = (data) => {
+    console.log(data);
+  };
+
   return (
     <>
       <PageHeader title={"Checkout"} currentPath={"/checkout"} />
-      <div className="px-[100px] py-16 flex">
-        <form className="w-1/2 px-4 md:px-[100px] py-8 md:py-[72px] flex justify-center flex-col gap-6">
+      <div className="px-[100px] py-16 flex lg:flex-row flex-col">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="w-full lg:w-1/2 px-4 md:px-[100px] py-8 md:py-[72px] flex justify-center flex-col gap-6"
+        >
           <h1 className="font-poppins font-semibold text-4xl">
             Billing details
           </h1>
@@ -17,18 +55,28 @@ const Checkout = () => {
               <input
                 type="text"
                 id="firstName"
-                name="firstName"
+                {...register("firstName")}
                 className="w-full border border-gray-300 p-2 rounded-md"
               />
+              {errors.firstName && (
+                <span className="text-red-600">
+                  {errors.firstName?.message?.toString()}
+                </span>
+              )}
             </div>
             <div>
               <label htmlFor="lastName">Last Name</label>
               <input
                 type="text"
                 id="lastName"
-                name="lastName"
+                {...register("lastName")}
                 className="w-full border border-gray-300 p-2 rounded-md"
               />
+              {errors.lastName && (
+                <span className="text-red-600">
+                  {errors.lastName?.message?.toString()}
+                </span>
+              )}
             </div>
           </div>
           <div>
@@ -36,7 +84,7 @@ const Checkout = () => {
             <input
               type="text"
               id="companyName"
-              name="companyName"
+              {...register("companyName")}
               className="w-full border border-gray-300 p-2 rounded-md"
             />
           </div>
@@ -45,52 +93,77 @@ const Checkout = () => {
             <input
               type="text"
               id="zipCode"
-              name="zipCode"
+              {...register("zipCode")}
               className="w-full border border-gray-300 p-2 rounded-md"
             />
+            {errors.zipCode && (
+              <span className="text-red-600">
+                {errors.zipCode.message?.toString()}
+              </span>
+            )}
           </div>
           <div>
             <label htmlFor="country">Country / Region</label>
             <input
               type="text"
               id="country"
-              name="country"
+              {...register("country")}
               className="w-full border border-gray-300 p-2 rounded-md"
             />
+            {errors.country && (
+              <span className="text-red-600">
+                {errors.country.message?.toString()}
+              </span>
+            )}
           </div>
           <div>
             <label htmlFor="streetAddress">Street address</label>
             <input
               type="text"
               id="streetAddress"
-              name="streetAddress"
+              {...register("streetAddress")}
               className="w-full border border-gray-300 p-2 rounded-md"
             />
+            {errors.streetAddress && (
+              <span className="text-red-600">
+                {errors.streetAddress.message?.toString()}
+              </span>
+            )}
           </div>
           <div>
             <label htmlFor="city">Town / City</label>
             <input
               type="text"
               id="city"
-              name="city"
+              {...register("city")}
               className="w-full border border-gray-300 p-2 rounded-md"
             />
+            {errors.city && (
+              <span className="text-red-600">
+                {errors.city.message?.toString()}
+              </span>
+            )}
           </div>
           <div>
             <label htmlFor="province">Province</label>
             <input
               type="text"
               id="province"
-              name="province"
+              {...register("province")}
               className="w-full border border-gray-300 p-2 rounded-md"
             />
+            {errors.province && (
+              <span className="text-red-600">
+                {errors.province.message?.toString()}
+              </span>
+            )}
           </div>
           <div>
             <label htmlFor="addonAddress">Add-on address</label>
             <input
               type="text"
               id="addonAddress"
-              name="addonAddress"
+              {...register("addonAddress")}
               className="w-full border border-gray-300 p-2 rounded-md"
             />
           </div>
@@ -99,65 +172,76 @@ const Checkout = () => {
             <input
               type="email"
               id="email"
-              name="email"
+              {...register("email")}
               className="w-full border border-gray-300 p-2 rounded-md"
             />
+            {errors.email && (
+              <span className="text-red-600">
+                {errors.email.message?.toString()}
+              </span>
+            )}
           </div>
           <div>
             <label htmlFor="additionalInfo">Additional information</label>
             <input
               type="text"
               id="additionalInfo"
-              name="additionalInfo"
+              {...register("additionalInfo")}
               className="w-full border border-gray-300 p-2 rounded-md"
             />
           </div>
-          <button
-            type="submit"
-            className="mt-4 p-2 bg-blue-500 text-white rounded-md"
-          >
-            Submit
-          </button>
         </form>
 
-        <div className="w-1/2 h-[789px] bg-white p-4 flex flex-col">
+        <div className="w-full lg:w-1/2 m-10 h-[789px] bg-white p-4 flex flex-col">
           <div className="flex-grow flex flex-col justify-between">
             <div>
               <div className="text-black text-2xl font-medium font-['Poppins'] flex justify-between">
                 <span>Product</span>
                 <span>Subtotal</span>
               </div>
+              {cart.map((item) => (
+                <div className="w-full">
+                  <div className="mt-4 flex justify-between items-center">
+                    <div className="text-black text-base font-normal font-['Poppins']">
+                      {item.title}
+                    </div>
+                  </div>
 
-              <div className="mt-4 flex justify-between items-center">
-                <div className="text-black text-base font-normal font-['Poppins']">
-                  Asgaard sofa
+                  <div className="flex justify-between items-center mt-1">
+                    <div className="text-black text-xs font-medium font-['Poppins']">
+                      X {item.quantity}
+                    </div>
+                    <div className="text-black text-base font-light font-['Poppins']">
+                      R${(item.salePrice * item.quantity).toFixed(2)}
+                    </div>
+                  </div>
                 </div>
-                <div className="text-black text-base font-light font-['Poppins']">
-                  Rs. 250,000.00
-                </div>
-              </div>
-
-              <div className="flex justify-between items-center mt-1">
-                <div className="text-black text-xs font-medium font-['Poppins']">
-                  X 1
-                </div>
-                <div className="text-black text-base font-light font-['Poppins']">
-                  Rs. 250,000.00
-                </div>
-              </div>
-
-              <div className="mt-6 text-[#b88e2f] text-2xl font-bold font-['Poppins'] text-right">
-                Rs. 250,000.00
-              </div>
+              ))}
 
               <div className="mt-4 text-black text-base font-normal font-['Poppins'] flex justify-between">
                 <span>Subtotal</span>
-                <span>Rs. 250,000.00</span>
+                <span>
+                  R$
+                  {cart
+                    .reduce(
+                      (acc, item) => acc + item.salePrice * item.quantity,
+                      0
+                    )
+                    .toFixed(2)}
+                </span>
               </div>
 
               <div className="text-black text-base font-normal font-['Poppins'] flex justify-between">
                 <span>Total</span>
-                <span>Rs. 250,000.00</span>
+                <span className=" text-[#b88e2f] text-2xl font-bold font-['Poppins'] text-right">
+                  R$
+                  {cart
+                    .reduce(
+                      (acc, item) => acc + item.salePrice * item.quantity,
+                      0
+                    )
+                    .toFixed(2)}
+                </span>
               </div>
 
               <div className="my-6 border-t border-[#d9d9d9]"></div>
@@ -201,7 +285,10 @@ const Checkout = () => {
           </div>
 
           <div className="mt-6 w-full flex justify-center">
-            <button className="w-[318px] h-16 rounded-[15px] border border-black flex items-center justify-center">
+            <button
+              className="w-[318px] h-16 rounded-[15px] border border-black flex items-center justify-center"
+              onClick={handleSubmit(onSubmit)}
+            >
               <span className="text-black text-xl font-normal font-['Poppins']">
                 Place order
               </span>
