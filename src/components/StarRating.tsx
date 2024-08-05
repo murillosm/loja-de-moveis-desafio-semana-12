@@ -14,13 +14,13 @@ const RatingStars: React.FC<RatingStarsProps> = ({ rating }) => {
       {Array(fullStars)
         .fill(0)
         .map((_, index) => (
-          <i key={index} className="fa fa-star text-yellow-300"></i>
+          <i key={index} className="fa fa-star text-yellow-300" aria-label="full star"></i>
         ))}
-      {halfStar && <i className="fa fa-star-half-alt text-yellow-300"></i>}
+      {halfStar && <i className="fa fa-star-half-alt text-yellow-300" aria-label="half star"></i>}
       {Array(emptyStars)
         .fill(0)
         .map((_, index) => (
-          <i key={index} className="fa fa-star text-gray-300"></i>
+          <i key={index} className="fa fa-star text-gray-300" aria-label="empty star"></i>
         ))}
     </div>
   );
