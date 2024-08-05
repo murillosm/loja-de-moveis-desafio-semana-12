@@ -5,6 +5,7 @@ import { BrowserRouter } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 import React from "react";
 import { AppProvider } from "../../context/AppContext";
+import { CartProvider } from "../../context/CartContext";
 
 // Mock do produto para os testes
 const mockProduct = {
@@ -41,7 +42,9 @@ describe("ProductCard component", () => {
     render(
       <BrowserRouter>
         <AppProvider>
-          <ProductCard product={mockProduct} />
+          <CartProvider>
+            <ProductCard product={mockProduct} />
+          </CartProvider>
         </AppProvider>
       </BrowserRouter>
     );
@@ -56,7 +59,9 @@ describe("ProductCard component", () => {
     render(
       <BrowserRouter>
         <AppProvider>
-          <ProductCard product={mockProduct} />
+          <CartProvider>
+            <ProductCard product={mockProduct} />
+          </CartProvider>
         </AppProvider>
       </BrowserRouter>
     );
@@ -64,28 +69,14 @@ describe("ProductCard component", () => {
     expect(screen.getByText("NEW")).toBeInTheDocument();
   });
 
-  // it('should navigate to product page on card click', () => {
-  //   delete window.location;
-  //   window.location = { href: '' };
-
-  //   render(
-  //     <BrowserRouter>
-  //       <ProductCard product={mockProduct} />
-  //     </BrowserRouter>
-  //   );
-
-  //   const card = screen.getByRole('img', { name: mockProduct.title });
-  //   fireEvent.click(card);
-
-  //   expect(window.location.href).toBe(`/products/${mockProduct.id}`);
-  // });
-
   it("should navigate to product page on card click", () => {
     render(
       <AppProvider>
-        <BrowserRouter>
-          <ProductCard product={mockProduct} />
-        </BrowserRouter>
+        <CartProvider>
+          <BrowserRouter>
+            <ProductCard product={mockProduct} />
+          </BrowserRouter>
+        </CartProvider>
       </AppProvider>
     );
 
@@ -98,9 +89,11 @@ describe("ProductCard component", () => {
   it("should show hover options when mouse enters the card", () => {
     render(
       <AppProvider>
-        <BrowserRouter>
-          <ProductCard product={mockProduct} />
-        </BrowserRouter>
+        <CartProvider>
+          <BrowserRouter>
+            <ProductCard product={mockProduct} />
+          </BrowserRouter>
+        </CartProvider>
       </AppProvider>
     );
 
