@@ -75,11 +75,13 @@ const Checkout = () => {
     <>
       <PageHeader title={"Checkout"} currentPath={"/checkout"} />
       <div className="px-[100px] py-16 flex lg:flex-row flex-col">
-      <form
-        onSubmit={handleSubmit as SubmitHandler<FieldValues>}
-        className="w-full lg:w-1/2 px-4 md:px-[100px] py-8 md:py-[72px] flex justify-center flex-col gap-6"
-      >
-          <h1 className="font-poppins font-semibold text-4xl">Billing details</h1>
+        <form
+          onSubmit={handleSubmit as SubmitHandler<FieldValues>}
+          className="w-full lg:w-1/2 px-4 md:px-[100px] py-8 md:py-[72px] flex justify-center flex-col gap-6"
+        >
+          <h1 className="font-poppins font-semibold text-4xl">
+            Billing details
+          </h1>
           <div className="flex gap-6">
             <div>
               <label htmlFor="firstName">First Name</label>
@@ -90,7 +92,9 @@ const Checkout = () => {
                 className="w-full border border-gray-300 p-2 rounded-md"
               />
               {errors.firstName && (
-                <span className="text-red-600">{errors.firstName?.message?.toString()}</span>
+                <span className="text-red-600">
+                  {errors.firstName?.message?.toString()}
+                </span>
               )}
             </div>
             <div>
@@ -102,7 +106,9 @@ const Checkout = () => {
                 className="w-full border border-gray-300 p-2 rounded-md"
               />
               {errors.lastName && (
-                <span className="text-red-600">{errors.lastName?.message?.toString()}</span>
+                <span className="text-red-600">
+                  {errors.lastName?.message?.toString()}
+                </span>
               )}
             </div>
           </div>
@@ -125,7 +131,9 @@ const Checkout = () => {
               onBlur={checkCEP}
             />
             {errors.zipCode && (
-              <span className="text-red-600">{errors.zipCode.message?.toString()}</span>
+              <span className="text-red-600">
+                {errors.zipCode.message?.toString()}
+              </span>
             )}
           </div>
           <div>
@@ -137,7 +145,9 @@ const Checkout = () => {
               className="w-full border border-gray-300 p-2 rounded-md"
             />
             {errors.country && (
-              <span className="text-red-600">{errors.country.message?.toString()}</span>
+              <span className="text-red-600">
+                {errors.country.message?.toString()}
+              </span>
             )}
           </div>
           <div>
@@ -149,7 +159,9 @@ const Checkout = () => {
               className="w-full border border-gray-300 p-2 rounded-md"
             />
             {errors.streetAddress && (
-              <span className="text-red-600">{errors.streetAddress.message?.toString()}</span>
+              <span className="text-red-600">
+                {errors.streetAddress.message?.toString()}
+              </span>
             )}
           </div>
           <div>
@@ -161,7 +173,9 @@ const Checkout = () => {
               className="w-full border border-gray-300 p-2 rounded-md"
             />
             {errors.city && (
-              <span className="text-red-600">{errors.city.message?.toString()}</span>
+              <span className="text-red-600">
+                {errors.city.message?.toString()}
+              </span>
             )}
           </div>
           <div>
@@ -173,7 +187,9 @@ const Checkout = () => {
               className="w-full border border-gray-300 p-2 rounded-md"
             />
             {errors.province && (
-              <span className="text-red-600">{errors.province.message?.toString()}</span>
+              <span className="text-red-600">
+                {errors.province.message?.toString()}
+              </span>
             )}
           </div>
           <div>
@@ -194,7 +210,9 @@ const Checkout = () => {
               className="w-full border border-gray-300 p-2 rounded-md"
             />
             {errors.email && (
-              <span className="text-red-600">{errors.email.message?.toString()}</span>
+              <span className="text-red-600">
+                {errors.email.message?.toString()}
+              </span>
             )}
           </div>
           <div>
@@ -215,20 +233,22 @@ const Checkout = () => {
                 <span>Product</span>
                 <span>Subtotal</span>
               </div>
-              {cart.map((item) => (
-                <div className="w-full">
-                  <div className="mt-4 flex justify-between items-center">
-                    <div className="text-black text-base font-normal font-['Poppins']">
-                      {item.title}
+              {cart.map((item, index) => (
+                <div key={index}>
+                  <div className="w-full">
+                    <div className="mt-4 flex justify-between items-center">
+                      <div className="text-black text-base font-normal font-['Poppins']">
+                        {item.title}
+                      </div>
                     </div>
-                  </div>
 
-                  <div className="flex justify-between items-center mt-1">
-                    <div className="text-black text-xs font-medium font-['Poppins']">
-                      X {item.quantity}
-                    </div>
-                    <div className="text-black text-base font-light font-['Poppins']">
-                      R${(item.salePrice * item.quantity).toFixed(2)}
+                    <div className="flex justify-between items-center mt-1">
+                      <div className="text-black text-xs font-medium font-['Poppins']">
+                        X {item.quantity}
+                      </div>
+                      <div className="text-black text-base font-light font-['Poppins']">
+                        R${(item.salePrice * item.quantity).toFixed(2)}
+                      </div>
                     </div>
                   </div>
                 </div>
