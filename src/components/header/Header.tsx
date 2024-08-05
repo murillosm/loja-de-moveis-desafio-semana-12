@@ -8,6 +8,7 @@ import CartModal from "../CartModal";
 import { auth } from "../../services/firebaseConfig";
 import { signOut } from "firebase/auth";
 
+
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isCartModalOpen, setIsCartModalOpen] = useState(false);
@@ -67,7 +68,7 @@ const Header = () => {
             <NavLink to="/" className={linkStyle}>
               <p>About</p>
             </NavLink>
-            <NavLink to="/" className={linkStyle}>
+            <NavLink to="/contact" className={linkStyle}>
               <p>Contact</p>
             </NavLink>
           </nav>

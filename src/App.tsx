@@ -11,6 +11,7 @@ import { AppProvider } from "./context/AppContext";
 import { CartProvider } from "./context/CartContext";
 import Checkout from "./pages/Checkout";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Contact from "./pages/Contact";
 
 const App: React.FC = () => {
   return (
@@ -24,6 +25,7 @@ const App: React.FC = () => {
               <Route path="/products/:productId" element={<SingleProduct />} />
               <Route path="/cart" element={<Cart />} />
               <Route path="/checkout" element={<ProtectedRoute component={Checkout} />} />
+              <Route path="/contact" element={<Contact />} />
             </Route>
             <Route path="/login" element={<Login />} />
           </Routes>
