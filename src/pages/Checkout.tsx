@@ -1,7 +1,5 @@
-// src/pages/Checkout.js
-
-import React, { span, useState } from "react";
-import { useForm } from "react-hook-form";
+import React from "react";
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import PageHeader from "../components/nav/PageHeader";
@@ -23,32 +21,65 @@ const schema = z.object({
 });
 
 const Checkout = () => {
-  const { cart, removeFromCart } = useCartContext();
-
+  const { cart } = useCartContext();
 
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(schema),
   });
 
-  const onSubmit = (data) => {
+  type FormData = {
+    firstName: string;
+    lastName: string;
+    companyName: string;
+    zipCode: string;
+    country: string;
+    streetAddress: string;
+    city: string;
+    province: string;
+    addonAddress: string;
+    email: string;
+    additionalInfo: string;
+  };
+
+  const onSubmit = (data: FormData) => {
     console.log(data);
+  };
+
+  const checkCEP = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const cep = e.target.value;
+    const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+    const data = await response.json();
+
+    console.log(data);
+
+    if (data.erro) {
+      return {
+        zipCode: {
+          message: "Invalid CEP code",
+        },
+      };
+    }
+
+    setValue("country", data.uf);
+    setValue("streetAddress", data.logradouro);
+    setValue("city", data.localidade);
+    setValue("province", data.bairro);
   };
 
   return (
     <>
       <PageHeader title={"Checkout"} currentPath={"/checkout"} />
       <div className="px-[100px] py-16 flex lg:flex-row flex-col">
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="w-full lg:w-1/2 px-4 md:px-[100px] py-8 md:py-[72px] flex justify-center flex-col gap-6"
-        >
-          <h1 className="font-poppins font-semibold text-4xl">
-            Billing details
-          </h1>
+      <form
+        onSubmit={handleSubmit as SubmitHandler<FieldValues>}
+        className="w-full lg:w-1/2 px-4 md:px-[100px] py-8 md:py-[72px] flex justify-center flex-col gap-6"
+      >
+          <h1 className="font-poppins font-semibold text-4xl">Billing details</h1>
           <div className="flex gap-6">
             <div>
               <label htmlFor="firstName">First Name</label>
@@ -59,9 +90,7 @@ const Checkout = () => {
                 className="w-full border border-gray-300 p-2 rounded-md"
               />
               {errors.firstName && (
-                <span className="text-red-600">
-                  {errors.firstName?.message?.toString()}
-                </span>
+                <span className="text-red-600">{errors.firstName?.message?.toString()}</span>
               )}
             </div>
             <div>
@@ -73,9 +102,7 @@ const Checkout = () => {
                 className="w-full border border-gray-300 p-2 rounded-md"
               />
               {errors.lastName && (
-                <span className="text-red-600">
-                  {errors.lastName?.message?.toString()}
-                </span>
+                <span className="text-red-600">{errors.lastName?.message?.toString()}</span>
               )}
             </div>
           </div>
@@ -95,11 +122,10 @@ const Checkout = () => {
               id="zipCode"
               {...register("zipCode")}
               className="w-full border border-gray-300 p-2 rounded-md"
+              onBlur={checkCEP}
             />
             {errors.zipCode && (
-              <span className="text-red-600">
-                {errors.zipCode.message?.toString()}
-              </span>
+              <span className="text-red-600">{errors.zipCode.message?.toString()}</span>
             )}
           </div>
           <div>
@@ -111,9 +137,7 @@ const Checkout = () => {
               className="w-full border border-gray-300 p-2 rounded-md"
             />
             {errors.country && (
-              <span className="text-red-600">
-                {errors.country.message?.toString()}
-              </span>
+              <span className="text-red-600">{errors.country.message?.toString()}</span>
             )}
           </div>
           <div>
@@ -125,9 +149,7 @@ const Checkout = () => {
               className="w-full border border-gray-300 p-2 rounded-md"
             />
             {errors.streetAddress && (
-              <span className="text-red-600">
-                {errors.streetAddress.message?.toString()}
-              </span>
+              <span className="text-red-600">{errors.streetAddress.message?.toString()}</span>
             )}
           </div>
           <div>
@@ -139,9 +161,7 @@ const Checkout = () => {
               className="w-full border border-gray-300 p-2 rounded-md"
             />
             {errors.city && (
-              <span className="text-red-600">
-                {errors.city.message?.toString()}
-              </span>
+              <span className="text-red-600">{errors.city.message?.toString()}</span>
             )}
           </div>
           <div>
@@ -153,9 +173,7 @@ const Checkout = () => {
               className="w-full border border-gray-300 p-2 rounded-md"
             />
             {errors.province && (
-              <span className="text-red-600">
-                {errors.province.message?.toString()}
-              </span>
+              <span className="text-red-600">{errors.province.message?.toString()}</span>
             )}
           </div>
           <div>
@@ -176,9 +194,7 @@ const Checkout = () => {
               className="w-full border border-gray-300 p-2 rounded-md"
             />
             {errors.email && (
-              <span className="text-red-600">
-                {errors.email.message?.toString()}
-              </span>
+              <span className="text-red-600">{errors.email.message?.toString()}</span>
             )}
           </div>
           <div>
