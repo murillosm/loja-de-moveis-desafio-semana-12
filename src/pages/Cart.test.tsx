@@ -1,6 +1,6 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, act } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import CartModal from "./CartModal";
+import Cart from "./Cart";
 import { BrowserRouter } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import React from "react";
@@ -44,11 +44,9 @@ vi.mock("react-firebase-hooks/auth", () => ({
   useAuthState: vi.fn(),
 }));
 
-describe("CartModal component", () => {
-  const toggleCartModal = vi.fn();
-
+describe("Cart component", () => {
   beforeEach(() => {
-    (useAuthState as vi.Mock).mockReturnValue([true, false, false]);
+    (useAuthState as vi.Mock).mockReturnValue([{ uid: "test-user" }, false, undefined]);
   });
 
   it("should add item to cart", () => {
@@ -64,7 +62,7 @@ describe("CartModal component", () => {
       <BrowserRouter>
         <AppProvider>
           <CartProvider>
-            <CartModal toggleCartModal={toggleCartModal} />
+            <Cart />
             <TestComponent />
           </CartProvider>
         </AppProvider>
@@ -74,54 +72,63 @@ describe("CartModal component", () => {
     expect(screen.getByText(mockProduct.title)).toBeInTheDocument();
   });
 
-  it("should navigate to checkout on checkout button click", () => {
-    render(
-      <BrowserRouter>
-        <AppProvider>
-          <CartProvider>
-            <CartModal toggleCartModal={toggleCartModal} />
-          </CartProvider>
-        </AppProvider>
-      </BrowserRouter>
-    );
-
-    const checkoutButton = screen.getByText("Checkout");
-    fireEvent.click(checkoutButton);
-
-    expect(window.location.pathname).toBe("/checkout");
-  });
-
-  it("should remove item from cart on remove button click", () => {
+  it("should remove item from cart on remove button click", async () => {
     const TestComponent = () => {
-      const { addToCart } = useCartContext();
+      const { addToCart, removeFromCart } = useCartContext();
       React.useEffect(() => {
         addToCart(mockProduct, 1, "M", "Red");
       }, []);
-      return null;
+      return (
+        <img
+          src="deleteIcon"
+          alt="Delete"
+          onClick={() => removeFromCart(mockProduct.id)}
+          className="cursor-pointer"
+        />
+      );
     };
-  
-    render(
-      <BrowserRouter>
-        <AppProvider>
-          <CartProvider>
-            <CartModal toggleCartModal={toggleCartModal} />
-            <TestComponent />
-          </CartProvider>
-        </AppProvider>
-      </BrowserRouter>
-    );
-  
-    expect(screen.getByText(mockProduct.title)).toBeInTheDocument();
-  
-    const removeButton = screen.getAllByRole("button").find((button) =>
-      button.querySelector("svg")
-    );
-    if (removeButton) {
-      fireEvent.click(removeButton);
-    }
 
-    setTimeout(() => {
-      expect(screen.queryByText(mockProduct.title)).not.toBeInTheDocument();
-    }, 0);
+    await act(async () => {
+      render(
+        <BrowserRouter>
+          <AppProvider>
+            <CartProvider>
+              <Cart />
+              <TestComponent />
+            </CartProvider>
+          </AppProvider>
+        </BrowserRouter>
+      );
+    });
+
+    const removeButtons = screen.getAllByAltText("Delete");
+    const removeButton = removeButtons[1];
+    await act(async () => {
+      fireEvent.click(removeButton);
+    });
+
+    expect(screen.queryByText(mockProduct.title)).not.toBeInTheDocument();
+  });
+
+
+  it("should navigate to checkout on checkout button click", async () => {
+    await act(async () => {
+      render(
+        <BrowserRouter>
+          <AppProvider>
+            <CartProvider>
+              <Cart />
+            </CartProvider>
+          </AppProvider>
+        </BrowserRouter>
+      );
+    });
+
+    const checkoutButton = screen.getByText("Check Out");
+    await act(async () => {
+      fireEvent.click(checkoutButton);
+    });
+
+    expect(window.location.pathname).toBe("/checkout");
   });
 });
