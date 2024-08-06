@@ -59,7 +59,8 @@ Este projeto é um site de vendas de móveis, desenvolvido com React, TypeScript
 
 1. **Execute os Testes**:
    ```sh
-   npm test
+    npm run test
+    npm run coverage
    ```
 
 ### Build para Produção
