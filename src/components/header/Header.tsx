@@ -8,7 +8,6 @@ import CartModal from "../CartModal";
 import { auth } from "../../services/firebaseConfig";
 import { signOut } from "firebase/auth";
 
-
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isCartModalOpen, setIsCartModalOpen] = useState(false);
@@ -42,8 +41,12 @@ const Header = () => {
             </div>
           </div>
           <div className="flex items-center lg:hidden">
-            <img src={vector} alt="Vector Icon" className="w-6 h-7 mx-2" />
-            <img src={cart} alt="Cart Icon" className="w-7 h-7 mx-2" />
+            <button onClick={handleVectorClick}>
+              <img src={vector} alt="Vector Icon" className="w-6 h-7 mx-2" />
+            </button>
+            <button onClick={toggleCartModal}>
+              <img src={cart} alt="Cart Icon" className="w-7 h-7 mx-2" />
+            </button>
             <button
               className="block text-black ml-5"
               onClick={() => setMenuOpen(!menuOpen)}
