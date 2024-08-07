@@ -69,7 +69,7 @@ const Home = () => {
         </div>
       </section>
 
-      <section className="flex flex-col justify-center items-center relative py-8 px-24 gap-8">
+      <section className="flex flex-col justify-center items-center relative py-8 px-24 gap-8 ">
         <div className="w-full relative">
           <h1 className="text-[#333333] text-[32px] font-bold font-poppins flex items-center justify-center">
             Browse The Range
