@@ -9,7 +9,7 @@
 src/mydjango/__pycache__/settings.cpython-35.pyc
 */static/
 .DS_Store
-.env
+.env/
 **/.DS_Store
 src/mydjango/local_settings.py
 src/media
