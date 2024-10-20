@@ -44,6 +44,7 @@ services:
     volumes:
       - local_postgres_data:/var/lib/postgresql/data
       - local_postgres_data_backups:/backups
+      - ./djangoapp:/djangoapp
     networks:
       - djangonetwork
   redis:

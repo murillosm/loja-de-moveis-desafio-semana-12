@@ -1,62 +1,51 @@
-# More Datascience frendly gist can be found here: https://gist.github.com/ruddra/870d7a51238ddfa4b50375086c12a4f5
-# pull official python alpine image
-FROM python:3.7-alpine
+# Use uma imagem base do Python
+FROM python:3.10-alpine
 
-# Set Environment Variable
+# Defina variáveis de ambiente
 ENV PYTHONUNBUFFERED 1
 ENV C_FORCE_ROOT true
 
-# Making source and static directory
+# Crie diretórios para o código-fonte e arquivos estáticos
 RUN mkdir /src
 RUN mkdir /static
 
-# Creating Work Directory
+# Defina o diretório de trabalho
 WORKDIR /src
 
-# Adding mandatory packages to docker
+# Atualize os pacotes e instale dependências obrigatórias
 RUN apk update && apk add --no-cache \
     postgresql \
     zlib \
-    jpeg 
-# un-comment the following two dependecies if you want to add library like pandas, scipy and numpy
-# openblas \ 
-# libstdc++ 
+    jpeg
 
-# Installing temporary packages required for installing requirements.pip 
+# Instale pacotes temporários necessários para instalar as dependências do Python
 RUN apk add --no-cache --virtual build-deps \
-    gcc \  
-    python3-dev \ 
+    gcc \
+    python3-dev \
     musl-dev \
-    postgresql-dev\
+    postgresql-dev \
     zlib-dev \
-    jpeg-dev 
-# un-comment if you want to install numpy, pandas, scipy etc and their supported dependencies
-# g++ \
-# openblas-dev \
-# cmake \
-# && ln -s /usr/include/locale.h /usr/include/xlocale.h
+    jpeg-dev
 
-# Update pip
+# Atualize o pip
 RUN pip install --upgrade pip
 
-# **if you want to install scipy uncomment the following file**
-# RUN pip3 install --no-cache-dir --disable-pip-version-check scipy==1.3.1
-
-# Installing requirements.pip from project
+# Copie o arquivo de requisitos para o contêiner
 COPY ./src/requirements.pip /scripts/
+
+# Instale as dependências do Python
 RUN pip install --no-cache-dir -r /scripts/requirements.pip
 
-# *install psycopg2 if you don't have it requirements.pip*
-# RUN pip install --no-cache-dir psycopg2
-
-# removing temporary packages from docker and removing cache 
+# Remova pacotes temporários para reduzir o tamanho da imagem
 RUN apk del build-deps && \
     find -type d -name __pycache__ -prune -exec rm -rf {} \; && \
     rm -rf ~/.cache/pip
 
+# Adicione um usuário e grupo para o Django
 RUN addgroup --system django && adduser --system django --ingroup django
-# COPY --from=base /opt/venv /opt/venv
-# ENV PATH="/opt/venv/bin:$PATH"
+
+# Defina o usuário para rodar o contêiner
 USER django
-# CMD will run when this dockerfile is running
+
+# Comando para rodar o servidor Django
 CMD ["sh", "-c", "python manage.py collectstatic --no-input; python manage.py migrate; gunicorn mydjango.wsgi -b 0.0.0.0:8000 & celery --app myapp.tasks worker --loglevel=INFO"]
